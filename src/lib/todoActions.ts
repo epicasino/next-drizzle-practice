@@ -3,28 +3,34 @@ import { eq, not } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
 import db from '../db/drizzle';
-import { todo } from '../db/schema';
+import { todo } from '@/db/schema';
 
 export const getData = async () => {
   const data = await db.select().from(todo);
   return data;
 };
 
-export const addTodo = async (id: number, text: string) => {
+export const getUserTodos = async (userId: string) => {
+  const data = await db.select().from(todo).where(eq(todo.userId, userId));
+  return data;
+};
+
+export const addTodo = async (id: string, text: string, userId: string) => {
   await db.insert(todo).values({
     id: id,
     text: text,
+    userId: userId,
   });
   revalidatePath('/');
 };
 
-export const deleteTodo = async (id: number) => {
+export const deleteTodo = async (id: string) => {
   await db.delete(todo).where(eq(todo.id, id));
 
   revalidatePath('/');
 };
 
-export const toggleTodo = async (id: number) => {
+export const toggleTodo = async (id: string) => {
   await db
     .update(todo)
     .set({
@@ -35,7 +41,7 @@ export const toggleTodo = async (id: number) => {
   revalidatePath('/');
 };
 
-export const editTodo = async (id: number, text: string) => {
+export const editTodo = async (id: string, text: string) => {
   await db
     .update(todo)
     .set({

@@ -8,25 +8,34 @@ import {
   deleteTodo,
   editTodo,
   toggleTodo,
-} from '../../actions/todoActions';
+} from '../../lib/todoActions';
+import * as uuid from 'uuid';
 
 interface Props {
   todos: todoType[];
+  session: {
+    id: string;
+    username: string;
+    expires: string;
+    iat: number;
+    exp: number;
+  };
 }
 
-const Todos: FC<Props> = ({ todos }) => {
+const Todos: FC<Props> = ({ todos, session }) => {
+  // console.log(session);
   // State to manage the list of todo items
   const [todoItems, setTodoItems] = useState<todoType[]>(todos);
 
   // Function to create a new todo item
   const createTodo = (text: string) => {
-    const id = (todoItems.at(-1)?.id || 0) + 1;
-    addTodo(id, text);
+    const id = uuid.v4();
+    addTodo(id, text, session.id);
     setTodoItems((prev) => [...prev, { id: id, text, done: false }]);
   };
 
   // Function to change the text of a todo item
-  const changeTodoText = (id: number, text: string) => {
+  const changeTodoText = (id: string, text: string) => {
     setTodoItems((prev) =>
       prev.map((todo) => (todo.id === id ? { ...todo, text } : todo))
     );
@@ -34,7 +43,7 @@ const Todos: FC<Props> = ({ todos }) => {
   };
 
   // Function to toggle the "done" status of a todo item
-  const toggleIsTodoDone = (id: number) => {
+  const toggleIsTodoDone = (id: string) => {
     setTodoItems((prev) =>
       prev.map((todo) =>
         todo.id === id ? { ...todo, done: !todo.done } : todo
@@ -44,7 +53,7 @@ const Todos: FC<Props> = ({ todos }) => {
   };
 
   // Function to delete a todo item
-  const deleteTodoItem = (id: number) => {
+  const deleteTodoItem = (id: string) => {
     setTodoItems((prev) => prev.filter((todo) => todo.id !== id));
     deleteTodo(id);
   };

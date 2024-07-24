@@ -4,9 +4,9 @@ import { todoType } from '../../types/todoType';
 
 interface Props {
   todo: todoType;
-  changeTodoText: (id: number, text: string) => void;
-  toggleIsTodoDone: (id: number, done: boolean) => void;
-  deleteTodoItem: (id: number) => void;
+  changeTodoText: (id: string, text: string) => void;
+  toggleIsTodoDone: (id: string, done: boolean) => void;
+  deleteTodoItem: (id: string) => void;
 }
 
 const Todo: FC<Props> = ({

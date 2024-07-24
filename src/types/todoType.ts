@@ -1,5 +1,5 @@
 export type todoType = {
-  id: number;
+  id: string;
   text: string;
   done: boolean;
 };
